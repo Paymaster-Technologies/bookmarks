@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Memo Bookmarks</title>
+  </head>
+  <body>
+    <header class="header">
+      <svg class="header__mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M4,0 L12,0 Q13,0 13,1 L13,13.6 L8,11 L3,13.6 L3,1 Q3,0 4,0 Z"/>
+      </svg>
+      <span class="header__title">Memo</span>
+      <button id="open-help" class="link header__help" type="button" title="Как пользоваться" aria-label="Как пользоваться">?</button>
+      <button id="open-panel" class="link" type="button" hidden>Панель</button>
+      <button id="sign-out" class="link" type="button" hidden>Выйти</button>
+    </header>
+
+    <section id="section-auth" hidden>
+      <p class="muted">Войдите, чтобы сохранять закладки.</p>
+      <div class="auth-methods">
+        <button id="login-google" class="segmented-item" type="button">Войти через Google</button>
+        <button id="login-webmoney" class="segmented-item" type="button">Войти через WebMoney</button>
+        <button id="toggle-password-form" class="segmented-item" type="button">
+          Войти по email и паролю
+        </button>
+      </div>
+      <form id="password-form" class="inline-form" hidden>
+        <label class="field">
+          <span>Email</span>
+          <input id="email" type="email" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input id="password" type="password" autocomplete="current-password" required />
+        </label>
+        <p id="password-error" class="error" role="alert" hidden></p>
+        <button id="sign-in" class="primary" type="submit">Войти</button>
+      </form>
+      <button id="connect" class="link" type="button">Открыть сайт Memo</button>
+    </section>
+
+    <div id="entry-types" class="segmented" role="tablist" aria-label="Что добавить" hidden>
+      <button id="entry-bookmark" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="section-form" tabindex="-1">Закладка</button>
+      <button id="entry-task" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="section-task-quick" tabindex="-1">Дело</button>
+      <button id="entry-memo" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="section-memo-quick" tabindex="-1">Заметка</button>
+    </div>
+    <p id="entry-note" class="muted small" hidden>
+      Эту страницу нельзя сохранить в закладки — доступны дело и заметка.
+    </p>
+
+    <section id="section-form" role="tabpanel" aria-labelledby="entry-bookmark" hidden>
+      <label class="field">
+        <span>Название</span>
+        <input id="name" type="text" />
+      </label>
+      <label class="field">
+        <span>Ссылка</span>
+        <input id="url" type="url" />
+      </label>
+      <label class="field">
+        <span>Описание</span>
+        <textarea id="description"></textarea>
+      </label>
+      <label class="field">
+        <span>Страница</span>
+        <select id="page"></select>
+      </label>
+      <button id="add-page" class="link link--append" type="button">+ Новая страница</button>
+      <div id="new-page" class="inline-form" hidden>
+        <label class="field">
+          <span>Название страницы</span>
+          <input id="new-page-name" type="text" />
+        </label>
+        <p id="new-page-error" class="error" role="alert" hidden></p>
+        <button id="create-page" class="secondary" type="button">Создать страницу</button>
+      </div>
+
+      <label class="field">
+        <span>Виджет</span>
+        <select id="widget"></select>
+      </label>
+      <button id="add-widget" class="link link--append" type="button" disabled>+ Новый виджет</button>
+      <div id="new-widget" class="inline-form" hidden>
+        <label class="field">
+          <span>Название виджета</span>
+          <input id="new-widget-name" type="text" />
+        </label>
+        <p id="new-widget-error" class="error" role="alert" hidden></p>
+        <button id="create-widget" class="secondary" type="button" disabled>Создать виджет</button>
+      </div>
+      <p id="duplicate-note" class="muted small" hidden>Эта ссылка уже сохранена в виджете.</p>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <button id="save" class="primary" type="button" disabled>Сохранить</button>
+    </section>
+
+    <section id="section-task-quick" role="tabpanel" aria-labelledby="entry-task" hidden>
+      <label class="field">
+        <span>Название</span>
+        <input id="task-name" type="text" />
+      </label>
+      <label class="field">
+        <span>Описание</span>
+        <textarea id="task-description"></textarea>
+      </label>
+      <label class="field">
+        <span>Страница</span>
+        <select id="task-page"></select>
+      </label>
+      <label class="field">
+        <span>Виджет дел</span>
+        <select id="task-widget"></select>
+      </label>
+      <button id="task-add-widget" class="link link--append" type="button" disabled>+ Новый виджет</button>
+      <div id="task-new-widget" class="inline-form" hidden>
+        <label class="field">
+          <span>Название виджета</span>
+          <input id="task-new-widget-name" type="text" />
+        </label>
+        <p id="task-new-widget-error" class="error" role="alert" hidden></p>
+        <button id="task-create-widget" class="secondary" type="button" disabled>Создать виджет дел</button>
+      </div>
+      <p id="task-hint" class="muted small" hidden></p>
+      <p id="task-done" class="muted small" role="status"></p>
+      <p id="task-error" class="error" role="alert" hidden></p>
+      <button id="task-save" class="primary" type="button" disabled>Добавить дело</button>
+    </section>
+
+    <section id="section-memo-quick" role="tabpanel" aria-labelledby="entry-memo" hidden>
+      <label class="field">
+        <span>Что добавить в заметку</span>
+        <textarea id="memo-text"></textarea>
+      </label>
+      <label class="field">
+        <span>Страница</span>
+        <select id="memo-page"></select>
+      </label>
+      <label class="field">
+        <span>Виджет заметок</span>
+        <select id="memo-widget"></select>
+      </label>
+      <button id="memo-add-widget" class="link link--append" type="button" disabled>+ Новый виджет</button>
+      <div id="memo-new-widget" class="inline-form" hidden>
+        <label class="field">
+          <span>Название виджета</span>
+          <input id="memo-new-widget-name" type="text" />
+        </label>
+        <p id="memo-new-widget-error" class="error" role="alert" hidden></p>
+        <button id="memo-create-widget" class="secondary" type="button" disabled>Создать виджет заметок</button>
+      </div>
+      <p id="memo-hint" class="muted small" hidden></p>
+      <p class="muted small">Текст добавится в конец заметки.</p>
+      <p id="memo-done" class="muted small" role="status"></p>
+      <p id="memo-error" class="error" role="alert" hidden></p>
+      <button id="memo-save" class="primary" type="button" disabled>Добавить в заметку</button>
+    </section>
+
+    <section id="section-panel" hidden>
+      <button id="panel-back" class="link" type="button">← Назад</button>
+      <label class="checkline">
+        <input id="panel-enabled" type="checkbox" />
+        <span>Показывать закладки Memo на панели Chrome</span>
+      </label>
+      <p id="panel-hint" class="muted small">
+        Папка «Memo» появится на панели закладок браузера. Если панели не видно,
+        включите её сочетанием Ctrl+Shift+B.
+      </p>
+      <div id="panel-body" hidden>
+        <label class="field">
+          <span>Страница</span>
+          <select id="panel-page"></select>
+        </label>
+        <div id="panel-widgets" class="checklist"></div>
+        <p id="panel-empty" class="muted small" hidden>
+          На этой странице нет виджетов закладок.
+        </p>
+        <p id="panel-status" class="muted small"></p>
+        <button id="panel-sync" class="link" type="button">Обновить сейчас</button>
+      </div>
+      <div id="panel-ask" class="inline-form" hidden>
+        <p id="panel-ask-text"></p>
+        <button id="panel-ask-remove" class="primary" type="button">Удалить папку</button>
+        <button id="panel-ask-keep" class="link" type="button">Оставить</button>
+      </div>
+    </section>
+
+    <section id="section-result" hidden>
+      <p id="result-text"></p>
+      <button id="open-memo" class="link" type="button">Открыть в Memo</button>
+    </section>
+    <section id="section-error" hidden>
+      <p id="error-text" class="error" role="alert"></p>
+      <button id="retry" class="primary" type="button">Повторить</button>
+    </section>
+
+    <p id="loading" class="muted">Загрузка…</p>
+    <button id="open-side-panel" class="link" type="button" hidden>Открыть боковую панель</button>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

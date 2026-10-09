@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../popup/popup.css" />
+    <link rel="stylesheet" href="welcome.css" />
+    <title>Memo Bookmarks подключён</title>
+  </head>
+  <body class="welcome">
+    <main class="sheet">
+      <header class="header">
+        <svg class="header__mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M4,0 L12,0 Q13,0 13,1 L13,13.6 L8,11 L3,13.6 L3,1 Q3,0 4,0 Z"/>
+        </svg>
+        <span class="header__title">Memo</span>
+      </header>
+
+      <h1 class="welcome__title">Аккаунт подключён</h1>
+      <p class="welcome__lead">
+        Теперь плагин сохраняет любую вкладку в Memo и умеет держать ваши закладки
+        прямо на панели браузера. Три шага, чтобы начать.
+      </p>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step__num" aria-hidden="true">1</span>
+          <div class="step__body">
+            <h2 class="step__title">Закрепите иконку</h2>
+            <p>
+              Нажмите на пазл <span class="key">🧩</span> справа от адресной строки
+              и щёлкните булавку рядом с «Memo Bookmarks». Иконка останется на виду —
+              с неё начинается всё остальное.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <span class="step__num" aria-hidden="true">2</span>
+          <div class="step__body">
+            <h2 class="step__title">Сохраните вкладку</h2>
+            <p>
+              На любой странице нажмите иконку Memo. Название, адрес и описание
+              подставятся сами — останется выбрать страницу и виджет и нажать
+              «Сохранить». Если подходящего виджета ещё нет, его можно создать
+              прямо там же.
+            </p>
+          </div>
+        </li>
+
+        <li class="step">
+          <span class="step__num" aria-hidden="true">3</span>
+          <div class="step__body">
+            <h2 class="step__title">Выведите закладки на панель браузера</h2>
+            <p>
+              В попапе нажмите «Панель» и включите тумблер. Chrome спросит доступ
+              к закладкам — без него панель работать не может. Отметьте нужные
+              виджеты, и на панели закладок появится папка «Memo» с ними.
+            </p>
+            <p class="muted small">
+              Не видно панели закладок? Включите её сочетанием
+              <span class="key">Ctrl</span> + <span class="key">Shift</span> +
+              <span class="key">B</span>.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="welcome__actions">
+        <button id="open-memo" class="primary" type="button">Открыть Memo</button>
+        <button id="close" class="link" type="button">Закрыть эту вкладку</button>
+      </div>
+
+      <p class="muted small welcome__foot">
+        Эту страницу всегда можно открыть заново — кнопка «?» в шапке попапа.
+        Синхронизация с панелью односторонняя: Memo → Chrome. Закладка, добавленная
+        в папку «Memo» средствами браузера, в Memo не попадёт.
+      </p>
+    </main>
+    <script type="module" src="welcome.js"></script>
+  </body>
+</html>

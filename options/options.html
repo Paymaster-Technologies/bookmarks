@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../popup/popup.css" />
+    <style>
+      body { width: auto; max-width: 480px; }
+    </style>
+    <title>Настройки Memo Bookmarks</title>
+  </head>
+  <body>
+    <h1 style="font-size: 16px">Настройки Memo Bookmarks</h1>
+    <label class="field">
+      <span>Окружение</span>
+      <select id="environment"></select>
+    </label>
+    <p id="hint" class="muted small"></p>
+    <p id="saved" class="muted small" hidden>
+      Окружение изменено, аккаунт отключён — подключите его заново.
+    </p>
+    <div id="panel-ask" class="inline-form" hidden>
+      <p>
+        На панели закладок осталась папка «Memo» с данными прежнего окружения.
+        Удалить её вместе со всем, что внутри?
+      </p>
+      <button id="panel-ask-remove" class="primary" type="button">Удалить папку</button>
+      <button id="panel-ask-keep" class="link" type="button">Оставить</button>
+    </div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

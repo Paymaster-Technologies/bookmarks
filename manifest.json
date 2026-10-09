@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "Memo Bookmarks",
+  "version": "1.0.0",
+  "description": "Save the current tab to Memo.top as a bookmark, task, or note",
+  "permissions": [
+    "storage",
+    "tabs",
+    "alarms",
+    "sidePanel"
+  ],
+  "optional_permissions": [
+    "bookmarks"
+  ],
+  "host_permissions": [
+    "https://memo.top/*",
+    "https://beta.memo.top/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "scripts": [
+      "background/service-worker.js"
+    ],
+    "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "memo-bookmarks@memo.top",
+      "strict_min_version": "128.0"
+    }
+  },
+  "minimum_chrome_version": "114",
+  "side_panel": {
+    "default_path": "panel/panel.html"
+  },
+  "sidebar_action": {
+    "default_panel": "panel/panel.html",
+    "default_title": "Memo",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "options/options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://memo.top/*",
+        "https://beta.memo.top/*"
+      ],
+      "js": [
+        "content/token-bridge.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

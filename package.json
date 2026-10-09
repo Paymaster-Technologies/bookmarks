@@ -1,0 +1,12 @@
+{
+  "name": "memo-bookmarks-extension",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node tools/build.mjs",
+    "build:chrome": "node tools/build.mjs --target=chrome",
+    "build:firefox": "node tools/build.mjs --target=firefox"
+  }
+}

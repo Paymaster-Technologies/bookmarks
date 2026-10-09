@@ -1,0 +1,422 @@
+:root {
+  --brand: #036cb5;
+  --brand-soft: #86b8db;
+  /*
+   * The same brand color, but for TEXT. --brand is meant for white text on top
+   * of a fill and isn't overridden in the dark theme: on a dark background it
+   * gives about 3:1 contrast, below AA. So colored text uses --brand-ink,
+   * which lightens to --brand-soft in the dark theme.
+   */
+  --brand-ink: #036cb5;
+  --ink: #12212e;
+  --ink-soft: #5b6b7a;
+  --ink-faint: #9aa5b1;
+  --line: #dce3ea;
+  --surface: #ffffff;
+  --surface-sunk: #f2f6f9;
+  --danger: #c0392b;
+  --focus-ring: rgba(3, 108, 181, 0.35);
+  --disabled-bg: var(--brand-soft);
+  --disabled-fg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-ink: var(--brand-soft);
+    --ink: #e7edf2;
+    --ink-soft: #9fb0bf;
+    --ink-faint: #5c6b78;
+    --line: #29404f;
+    --surface: #10202a;
+    --surface-sunk: #16262f;
+    --danger: #e07666;
+    --focus-ring: rgba(134, 184, 219, 0.45);
+    --disabled-bg: #1f3a4d;
+    --disabled-fg: #6f8494;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * The hidden attribute is overridden by any author display (the UA rule is
+ * weaker than author rules), and hiding via hidden is an extension-wide
+ * convention.
+ * Hence an explicit rule rather than a caveat on every display: flex.
+ */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  width: 340px;
+  margin: 0;
+  padding: 16px;
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--surface);
+}
+
+:where(button, input, select, textarea, a):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.header__mark {
+  flex: 0 0 auto;
+  color: var(--brand);
+}
+
+.header__title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+#sign-out {
+  margin-left: auto;
+  margin-top: 0;
+}
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.small {
+  font-size: 12px;
+}
+
+.error {
+  color: var(--danger);
+  margin: 8px 0;
+}
+
+.field {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.field > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+  /* 3 lines at the inherited 14px/1.4 line-height (19.6px/line = 58.8px)
+     plus the field's own padding (7px top + 7px bottom) and border (1px + 1px). */
+  min-height: 78px;
+}
+
+/*
+ * The description is an optional field and isn't worth three rows: with them
+ * the popup outgrew 600px, beyond which Chrome adds a scrollbar, and you had
+ * to scroll to the "Save" button. Two rows plus the resize handle.
+ */
+#description,
+#task-description {
+  min-height: 58px;
+}
+
+/*
+ * An empty role="status" isn't announced by a screen reader if the node enters
+ * the tree together with its text: change tracking is attached to an existing
+ * node. So these paragraphs always live in the markup and are cleared by
+ * emptying.
+ */
+p[role='status']:empty {
+  display: none;
+}
+
+.primary {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-fg);
+  cursor: default;
+}
+
+.secondary {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.secondary:disabled {
+  color: var(--ink-faint);
+  border-color: var(--line);
+  cursor: default;
+}
+
+.auth-methods {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.segmented-item {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+}
+
+.auth-methods > .segmented-item:not([hidden]) ~ .segmented-item:not([hidden]) {
+  border-top: 1px solid var(--line);
+}
+
+.segmented-item:hover {
+  background: var(--surface-sunk);
+}
+
+/*
+ * Entry type switcher: bookmark, task, note. Horizontal, unlike
+ * .auth-methods: there it's three long phrases and a vertical list reads
+ * better, here three short words that fit in a row at 340px.
+ */
+.segmented {
+  display: flex;
+  gap: 2px;
+  margin: 0 0 14px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-sunk);
+}
+
+.segmented__item {
+  flex: 1;
+  /* 36px is the lower bound of a comfortable tap target; with 7px vertical
+     padding the button came out at exactly 32px, and it was easy to miss and
+     hit the neighboring "pill" */
+  padding: 8px 6px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.segmented__item:hover:not(:disabled):not([aria-disabled='true']):not(.segmented__item--active) {
+  color: var(--ink);
+}
+
+/*
+ * Unavailable item. Contrast is deliberately low here, and that's allowed: WCAG
+ * 1.4.3 exempts inactive UI controls from the requirement. The reason it's
+ * unavailable is explained not by color or a tooltip (the browser doesn't send
+ * mouse events to disabled controls) but by the visible caption #entry-note.
+ */
+.segmented__item:disabled,
+.segmented__item[aria-disabled='true'] {
+  color: var(--ink-faint);
+  cursor: default;
+}
+
+.segmented__item--active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(18, 33, 46, 0.08);
+}
+
+/*
+ * In the dark theme a shadow of a dark color is invisible, and the "pill" is
+ * also inverted: --surface is darker than --surface-sunk, so the active item
+ * looks sunken rather than raised. A thin outline border restores it.
+ */
+@media (prefers-color-scheme: dark) {
+  .segmented__item--active {
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+}
+
+/* Side panel link — the popup footer, separated from the form by a rule */
+#open-side-panel {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.inline-form {
+  margin: 8px 0 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-sunk);
+}
+
+.inline-form .field:last-child,
+.inline-form .error:not([hidden]) {
+  margin-bottom: 10px;
+}
+
+div.inline-form,
+form.inline-form {
+  animation: reveal 0.15s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  div.inline-form,
+  form.inline-form {
+    animation: none;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.link:disabled {
+  color: var(--ink-faint);
+  cursor: default;
+  text-decoration: none;
+}
+
+.link {
+  padding: 0;
+  margin: 10px 0 0;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link:hover:not(:disabled) {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* Appendix links that belong to the field above them (#add-page, #add-widget):
+   small top margin so they read as attached to the select, clear bottom
+   margin so the next field doesn't read as attached to the link instead. */
+.link--append {
+  margin: 4px 0 14px;
+}
+
+.checkline {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 12px 0 4px;
+  cursor: pointer;
+}
+
+.checkline input {
+  margin: 2px 0 0;
+  flex: none;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 8px 0;
+}
+
+.checklist label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.checklist label span:first-of-type {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checklist .count {
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Help button in the header. A question mark rather than words: the header
+ * already has two text links, and the popup is 340px wide.
+ */
+.header__help {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--ink-soft);
+  flex: none;
+}
+
+.header__help:hover:not(:disabled) {
+  color: var(--brand);
+  border-color: var(--brand-soft);
+}

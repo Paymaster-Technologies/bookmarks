@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../popup/popup.css" />
+    <link rel="stylesheet" href="panel.css" />
+    <title>Memo</title>
+  </head>
+  <body class="panel">
+    <header class="header">
+      <svg class="header__mark" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M4,0 L12,0 Q13,0 13,1 L13,13.6 L8,11 L3,13.6 L3,1 Q3,0 4,0 Z"/>
+      </svg>
+      <span class="header__title">Memo</span>
+    </header>
+
+    <nav id="tabs" class="segmented" role="tablist" aria-label="Разделы панели" hidden>
+      <button id="tab-tasks" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="pane-tasks" tabindex="-1">Дела</button>
+      <button id="tab-memo" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="pane-memo" tabindex="-1">Заметка</button>
+      <button id="tab-calendar" class="segmented__item" type="button" role="tab" aria-selected="false" aria-controls="pane-calendar" tabindex="-1">Календарь</button>
+    </nav>
+
+    <section id="section-auth" hidden>
+      <p class="muted">Подключите аккаунт Memo, чтобы вести дела, заметки и календарь.</p>
+      <button id="connect" class="primary" type="button">Подключить аккаунт</button>
+    </section>
+
+    <section id="section-error" hidden>
+      <p id="error-text" class="error" role="alert"></p>
+      <button id="retry" class="primary" type="button">Повторить</button>
+    </section>
+
+    <section id="pane-tasks" role="tabpanel" aria-labelledby="tab-tasks" hidden>
+      <!-- Two selects on one row: stacked, they ate the top of the tab, and
+           reaching the first task took about 150px of scrolling -->
+      <div class="row">
+        <label class="field">
+          <span>Страница</span>
+          <select id="tasks-page"></select>
+        </label>
+        <label class="field">
+          <span>Виджет дел</span>
+          <select id="tasks-widget"></select>
+        </label>
+      </div>
+      <button id="tasks-add-widget" class="link link--append" type="button">+ Новый виджет</button>
+      <div id="tasks-new-widget" class="inline-form" hidden>
+        <label class="field">
+          <span>Название виджета</span>
+          <input id="tasks-new-widget-name" type="text" />
+        </label>
+        <button id="tasks-create-widget" class="secondary" type="button">Создать виджет дел</button>
+      </div>
+      <p id="tasks-hint" class="muted small" hidden></p>
+      <p id="tasks-error" class="error" role="alert" hidden></p>
+
+      <div id="tasks-body" hidden>
+        <div class="toolbar">
+          <span id="tasks-counter" class="muted small"></span>
+          <label class="toolbar__toggle">
+            <input id="tasks-hide-done" type="checkbox" />
+            <span class="small">Скрыть выполненные</span>
+          </label>
+        </div>
+        <div id="tasks-list" class="tasks" role="list"></div>
+        <p id="tasks-empty" class="muted small" hidden></p>
+        <p id="tasks-stale" class="muted small" hidden>
+          Если дела здесь были — возможно, истекла сессия: переподключите
+          аккаунт в попапе расширения.
+        </p>
+
+        <div class="inline-form">
+          <label class="field">
+            <span>Новое дело</span>
+            <input id="tasks-new-name" type="text" placeholder="Что сделать" />
+          </label>
+          <label class="field">
+            <span>Описание</span>
+            <textarea id="tasks-new-description" rows="2"></textarea>
+          </label>
+          <p id="tasks-create-error" class="error" role="alert" hidden></p>
+          <button id="tasks-create" class="primary" type="button">Добавить дело</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="pane-memo" role="tabpanel" aria-labelledby="tab-memo" hidden>
+      <!-- Two selects on one row: stacked, they ate the top of the tab, and
+           reaching the first task took about 150px of scrolling -->
+      <div class="row">
+        <label class="field">
+          <span>Страница</span>
+          <select id="memo-page"></select>
+        </label>
+        <label class="field">
+          <span>Виджет заметок</span>
+          <select id="memo-widget"></select>
+        </label>
+      </div>
+      <button id="memo-add-widget" class="link link--append" type="button">+ Новый виджет</button>
+      <div id="memo-new-widget" class="inline-form" hidden>
+        <label class="field">
+          <span>Название виджета</span>
+          <input id="memo-new-widget-name" type="text" />
+        </label>
+        <button id="memo-create-widget" class="secondary" type="button">Создать виджет заметок</button>
+      </div>
+      <p id="memo-hint" class="muted small" hidden></p>
+      <p id="memo-error" class="error" role="alert" hidden></p>
+      <div id="memo-confirm" class="confirm" hidden></div>
+
+      <div id="memo-body" hidden>
+        <label class="field">
+          <span>Текст заметки</span>
+          <textarea id="memo-content" class="memo__content"></textarea>
+        </label>
+        <p id="memo-state" class="muted small" role="status"></p>
+        <button id="memo-save" class="primary" type="button" disabled>Сохранить</button>
+        <p id="memo-note" class="muted small memo__note" hidden>
+          Заметка сохраняется целиком: последняя запись побеждает. Если её
+          правили в другом месте, откройте вкладку заново перед сохранением.
+        </p>
+      </div>
+    </section>
+
+    <section id="pane-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+      <div class="week">
+        <button id="cal-prev" class="week__arrow link" type="button" aria-label="Предыдущая неделя">←</button>
+        <div id="cal-week" class="week__days"></div>
+        <button id="cal-next" class="week__arrow link" type="button" aria-label="Следующая неделя">→</button>
+      </div>
+      <p id="cal-day-title" class="day-title" role="status"></p>
+      <p id="cal-error" class="error" role="alert" hidden></p>
+      <div id="cal-events" class="events"></div>
+      <p id="cal-empty" class="muted small" hidden>В этот день событий нет.</p>
+
+      <button id="cal-add" class="link link--append" type="button">+ Событие</button>
+      <div id="cal-form" class="inline-form" hidden>
+        <label class="field">
+          <span>Название</span>
+          <input id="cal-name" type="text" />
+        </label>
+        <label class="field">
+          <span>Описание</span>
+          <textarea id="cal-description" rows="2"></textarea>
+        </label>
+        <div class="row">
+          <label class="field">
+            <span>Дата</span>
+            <input id="cal-date" type="date" />
+          </label>
+          <label class="field">
+            <span>Начало</span>
+            <input id="cal-time" type="time" />
+          </label>
+        </div>
+        <label class="field">
+          <span>Длительность, мин</span>
+          <input id="cal-duration" type="number" min="1" step="5" />
+        </label>
+        <p id="cal-form-error" class="error" role="alert" hidden></p>
+        <button id="cal-create" class="primary" type="button">Создать событие</button>
+      </div>
+    </section>
+
+    <p id="loading" class="muted" role="status">Загрузка…</p>
+
+    <script type="module" src="panel.js"></script>
+  </body>
+</html>

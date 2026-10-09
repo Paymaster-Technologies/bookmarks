@@ -1,0 +1,8 @@
+node_modules/
+*.zip
+.DS_Store
+docs/
+
+# Build artifacts: staging and finished zips (npm run build)
+build/
+dist/

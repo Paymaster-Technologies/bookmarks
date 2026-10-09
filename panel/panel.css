@@ -1,0 +1,342 @@
+/*
+ * Side panel. Pulls in popup.css for the theme variables, fields, buttons and
+ * inline forms — the same trick the onboarding page (welcome.css) uses, and
+ * for the same reason: a copy of the visual language would drift from the
+ * original on the very first color tweak. Only the width is overridden here:
+ * popup.css is built for a 340px popup, while the panel spans the sidebar.
+ *
+ * The sidebar is ~320px wide (Chrome's minimum) or more, and the user resizes
+ * it with the mouse. So there are no fixed widths below, and the week strip
+ * shrinks proportionally.
+ */
+body.panel {
+  width: auto;
+  min-width: 280px;
+  padding: 12px 14px 20px;
+}
+
+/*
+ * The panel has no tab bar styles of its own: it is drawn by the shared
+ * .segmented/.segmented__item from popup.css. A character-for-character copy
+ * used to live here as .tabs/.tab, and edits to one switcher drifted from the
+ * other, even though they look the same and sit in the same spot on screen.
+ */
+
+/* Panel header: no bottom rule — the tab bar with its own border sits right
+   below, and two horizontal lines in a row looked like a layout bug */
+.panel .header {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Inline confirmation instead of window.confirm */
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-sunk);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* The prompt's buttons are the only way out of it, so no smaller than 30px */
+.confirm .link {
+  margin: 0;
+  padding: 6px 8px;
+  min-height: 30px;
+}
+
+.link--danger {
+  color: var(--danger);
+}
+
+.link--danger:hover:not(:disabled) {
+  color: var(--danger);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.toolbar__toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* The caption is part of the hit area (it's a <label>), but the area must
+     not be thinner than a finger: 32px, same as the cross and week arrows */
+  min-height: 32px;
+  padding: 2px 0;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.toolbar__toggle input {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  accent-color: var(--brand);
+}
+
+/*
+ * Row of fields. Wraps: in a 280px sidebar two fields per row get 130px each,
+ * and Chrome's native input[type=date] clips its own text below that width —
+ * better to wrap the second field onto the next line.
+ */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.row > .field {
+  flex: 1 1 130px;
+  min-width: 0;
+}
+
+/* Tasks */
+.tasks {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 12px;
+}
+
+/* Vertical padding now lives on the title itself (it is the hit area), and
+   the row's own padding would only bloat it to a centimeter and a half */
+.task {
+  padding: 1px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.task:last-child {
+  border-bottom: 0;
+}
+
+.task__line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/*
+ * The native checkbox is 13px and hard to hit on a laptop touchpad.
+ * 17px is the limit beyond which Chrome starts stretching the checkmark.
+ */
+.task__check {
+  width: 17px;
+  height: 17px;
+  margin: 8px 0 0;
+  flex: none;
+  accent-color: var(--brand);
+}
+
+/*
+ * The title fills the middle of the row, and the padding here is not
+ * decoration but hit area: expanding the description by clicking the text
+ * should be as easy as ticking the task off.
+ */
+.task__name {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 4px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  line-height: 1.35;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+/* A task without a description is rendered as a <span>: there is nothing to
+   expand, and the cursor says so honestly — it no longer poses as a button */
+span.task__name {
+  cursor: default;
+}
+
+/* --ink-soft, not --ink-faint: a completed task stays readable text instead
+   of turning into a gray smudge with 2.5:1 contrast */
+.task__name--done {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.task__remove {
+  flex: none;
+  margin: 0;
+  /* 30×32 is the minimum finger-sized target; the cross itself is small,
+     but the whole area around it is clickable */
+  width: 30px;
+  min-height: 32px;
+  padding: 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.task__remove:hover:not(:disabled) {
+  color: var(--danger);
+  text-decoration: none;
+}
+
+/* The indent equals the checkbox width plus gap and the title's padding: the
+   description lines up under the title's first letter, not the checkbox */
+.task__description {
+  margin: 0 0 6px 34px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Memo */
+.memo__content {
+  min-height: 240px;
+  resize: vertical;
+}
+
+.memo__note {
+  margin: 10px 0 0;
+  line-height: 1.45;
+}
+
+/* Calendar */
+.week {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 10px;
+}
+
+.week__arrow {
+  flex: none;
+  margin: 0;
+  /* The arrows page through weeks and get clicked often — same area as the cross */
+  width: 30px;
+  min-height: 32px;
+  padding: 0;
+  text-align: center;
+}
+
+.week__days {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 0 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--surface-sunk);
+  color: var(--ink-soft);
+  font: inherit;
+  cursor: pointer;
+  position: relative;
+}
+
+/* The strip's gap is 2px, so a focus ring with 2px offset overlapped the next chip */
+.chip:focus-visible {
+  outline-offset: 1px;
+}
+
+.chip__weekday {
+  /* 10px uppercase with letter-spacing reads as a pattern rather than text */
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chip__number {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A 1px border is barely visible on --surface-sunk; an inset shadow draws the
+   same outline more firmly and doesn't clash with the selected day's border */
+.chip--today {
+  box-shadow: inset 0 0 0 1px var(--brand-soft);
+}
+
+.chip--active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+/* Dot under the date: the day has events. The color is inherited, so on the
+   selected day the dot stays visible against the blue background. */
+.chip--busy::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.day-title {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * The list is waiting for the new day's response. Without dimming, the previous
+ * day's events linger for a second under the new heading — and can be deleted.
+ */
+.events--busy {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.event {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.event:last-child {
+  border-bottom: 0;
+}
+
+.event__line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.event__time {
+  flex: none;
+  color: var(--brand-ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.event__name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.event__description,
+.event__opponent {
+  margin: 4px 0 0 46px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
